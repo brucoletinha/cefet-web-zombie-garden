@@ -65,7 +65,21 @@ router.get('/new/', function(req, res) {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+router.post('/brains', function(req, res) {
 
+var idpessoa = connection.escape(req.params.id);
+db.query("INSERT INTO zombies.person('id','name','alive','eatenBy') VALUES ('" + idpessoa + "','João','1',NULL);",
+    function(err,result){
+    if (err) { res.send(402,"Vc falhou nessa missão, tente de novo")}
+    else { res.redirect('listPeople');}
+  });
+/*router.get('/people/', function(req, res) {
+  connection.query('SELECT * FROM person',
+    function(err, result){
+      res.render('listPeople', { pessoas: result });
+  });
+});*/
+});
 
 /* DELETE uma pessoa */
 // Exercício 2: IMPLEMENTAR AQUI
@@ -74,5 +88,19 @@ router.get('/new/', function(req, res) {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
+/*db.query('/people/:id', function(req, res) {
+  var id = connection.escape(req.params.id);
+  var query = 'DELETE FROM person WHERE id = ' + id;
+  connection.query(query, function(err, result) {
+    if (err)  { res.send(401, 'Pessoa inexistente'); }
+    else      { res.redirect('/people/'); }
+  });
+});
+router.get('/people/', function(req, res) {
+  connection.query('SELECT * FROM person',
+    function(err, result){
+      res.render('listPeople', { pessoas: result });
+  });
+});*/
 
 module.exports = router;
