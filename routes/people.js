@@ -65,20 +65,18 @@ router.get('/new/', function(req, res) {
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
-router.post('/brains', function(req, res) {
+router.post('/', function(req, res) {
 
-var idpessoa = connection.escape(req.params.id);
-db.query("INSERT INTO zombies.person('id','name','alive','eatenBy') VALUES ('" + idpessoa + "','João','1',NULL);",
-    function(err,result){
-    if (err) { res.send(402,"Vc falhou nessa missão, tente de novo")}
-    else { res.redirect('listPeople');}
+db.query('INSERT INTO person(name, alive, eatenBy) VALUES("' + req.body.name + '",1,NULL)', function(err, result){
+    if (err){
+      req.flash('error', 'Amiguinho não inserido =(' + err);
+    }
+    else{
+      req.flash('success', 'Aeeee!! Mais um amiguinho chegou!!');
+    }
+    res.redirect('/');
   });
-/*router.get('/people/', function(req, res) {
-  connection.query('SELECT * FROM person',
-    function(err, result){
-      res.render('listPeople', { pessoas: result });
-  });
-});*/
+});
 });
 
 /* DELETE uma pessoa */
@@ -88,19 +86,16 @@ db.query("INSERT INTO zombies.person('id','name','alive','eatenBy') VALUES ('" +
 //   2. Redirecionar para a rota de listagem de pessoas
 //      - Em caso de sucesso do INSERT, colocar uma mensagem feliz
 //      - Em caso de erro do INSERT, colocar mensagem vermelhinha
-/*db.query('/people/:id', function(req, res) {
-  var id = connection.escape(req.params.id);
-  var query = 'DELETE FROM person WHERE id = ' + id;
-  connection.query(query, function(err, result) {
-    if (err)  { res.send(401, 'Pessoa inexistente'); }
-    else      { res.redirect('/people/'); }
-  });
+router.delete('/:id', function(req, res) {
+    db.query('DELETE FROM person WHERE id = ' + req.params.id, function(err, result) {
+        if (!err) {
+            req.flash('success', 'Adeus mala! Até nunca mais!');
+        } 
+        else {
+            req.flash('error', 'Ah não! O mala não foi deletado! Droga!');
+        }
+        res.redirect('/people');
+    });
 });
-router.get('/people/', function(req, res) {
-  connection.query('SELECT * FROM person',
-    function(err, result){
-      res.render('listPeople', { pessoas: result });
-  });
-});*/
 
 module.exports = router;
